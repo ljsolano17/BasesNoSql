@@ -139,11 +139,20 @@
 				<th>Descripción del Medicamento</th>	
 				<th width="50px">Comentario del Doctor</th>	
 				<th width="150px">Precio Unitario.</th>
+				
 					
 				</tr>
 			</thead>
 			<tbody >
 
+			<?php
+			if(count($infoProductos)==0){
+			?>	<tr>
+			
+				<td><?php print("Consulta Medica: 35000")?></td>
+				
+			</tr>
+			<?php } ?>
 			<?php
               for($i=0;$i<count($infoProductos);$i++){
 
@@ -161,6 +170,7 @@
 					<td><?php print_r( $infoProductos[$i]['receta'][$x]['comentario']);?></td>				
 					<td><?php print_r( $infoProductos[$i]['datos'][$x]['precio']); ?></td>
 					
+					
 				</tr>
 			<?php
 						$precio_total = $infoProductos[$i]['receta'][$x]['cantidad']*$infoProductos[$i]['datos'][$x]['precio'];
@@ -175,7 +185,7 @@
 			<tfoot>
 				<tr>
 					<td><span>TOTAL</span></td>
-					<td><span><?php echo $total// echo $_SESSION['PrecioCita']*$_SESSION['PrecioMedicamentos']; ?></span></td>
+					<td><span><?php echo $total+35000// echo $_SESSION['PrecioCita']*$_SESSION['PrecioMedicamentos']; ?></span></td>
 				</tr>
 		</tfoot>
 	</table>

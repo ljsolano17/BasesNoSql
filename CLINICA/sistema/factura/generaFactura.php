@@ -23,7 +23,7 @@
 
 		$codCliente = $_REQUEST['cl'];
 		$noFactura = $_REQUEST['f'];
-		$anulada = '';
+		//$anulada = '';
 		print_r($codCliente);
 		$_SESSION['pruebaid']=$codCliente;
 
@@ -58,6 +58,8 @@
 			$_SESSION['FechaGenerarFactura']=$today;
 			$_SESSION['PrecioCita']=10000;
 			$_SESSION['PrecioMedicamentos']=2;
+
+cambiarEstadoPaciente($codCliente);
 
 			ob_start();
 			include(dirname('__FILE__').'/factura.php');

@@ -259,6 +259,7 @@ return $rawdata;
     "fecha" => $pfecha,
     "hora" => $phora,
     "descripcion" => $pdescripcion,
+    "Estado"=>"Pendiente",
     "id"=>getPacienteCount()
  );
   
@@ -687,4 +688,15 @@ $collection->insertOne($document);
 
 
 
+function cambiarEstadoPaciente($pidPaciente){
+  $idPaciente=(int)$pidPaciente;
+  $collection = Conectar("paciente");
 
+  $updateResult=$collection->updateOne( 
+  [ 'id' =>(int) $idPaciente ],
+  [ '$set' => [ 
+  'Estado' => "Atendido"
+  ]
+  ]);
+
+}

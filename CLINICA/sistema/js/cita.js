@@ -79,23 +79,28 @@ $("#citas").append("</tr>");
 
 
 
+console.log()
+
+    
+    for(i=0;i<ObjetoJSON.length;i++){
+        if(ObjetoJSON[i].Estado=="Pendiente"){
+        $("#citas").append("<tr>");
+        $("#citas").append("<th scope = 'row'>"+ObjetoJSON[i].nombre+" </th>");
+        $("#citas").append("<td> "+ObjetoJSON[i].cedula+ " </td>");
+        $("#citas").append("<td> "+ObjetoJSON[i].correo+ " </td>");
+        $("#citas").append("<td> "+ObjetoJSON[i].idDoctor+ " </td>");
+        $("#citas").append("<td> "+ObjetoJSON[i].fecha+" </td>");
+        $("#citas").append("<td> "+ObjetoJSON[i].hora+" </td>");
+        $("#citas").append("<td> "+ObjetoJSON[i].descripcion+" </td>");
+        $("#citas").append("<td> "+ "<a class='link_edit btn btn-primary' href = actualizaCita.php?idCita="+ObjetoJSON[i].id+">Modificar</a>"+"</td>");
+        $("#citas").append("<td>" + "<a class='link_delete btn btn-danger' href = eliminarCita.php?idCita="+ObjetoJSON[i].id+">Eliminar</a>"+"</td>");
+      //  $("#citas").append("<td> "+ "<a class='link_edit btn btn-primary' href = recetaMedica.php?idCita="+ObjetoJSON[i].id+">Receta Medica</a>"+"</td>");
+      $("#citas").append("<td> "+ "<a class='link_edit btn btn-primary' href = farmacia.php?idCita="+ObjetoJSON[i].id+">Receta Medica</a>"+"</td>");
+        $("#citas").append("</tr>");
+        }
+    }
 
 
-for(i=0;i<ObjetoJSON.length;i++){
-    $("#citas").append("<tr>");
-    $("#citas").append("<th scope = 'row'>"+ObjetoJSON[i].nombre+" </th>");
-    $("#citas").append("<td> "+ObjetoJSON[i].cedula+ " </td>");
-    $("#citas").append("<td> "+ObjetoJSON[i].correo+ " </td>");
-    $("#citas").append("<td> "+ObjetoJSON[i].idDoctor+ " </td>");
-    $("#citas").append("<td> "+ObjetoJSON[i].fecha+" </td>");
-    $("#citas").append("<td> "+ObjetoJSON[i].hora+" </td>");
-    $("#citas").append("<td> "+ObjetoJSON[i].descripcion+" </td>");
-    $("#citas").append("<td> "+ "<a class='link_edit btn btn-primary' href = actualizaCita.php?idCita="+ObjetoJSON[i].id+">Modificar</a>"+"</td>");
-    $("#citas").append("<td>" + "<a class='link_delete btn btn-danger' href = eliminarCita.php?idCita="+ObjetoJSON[i].id+">Eliminar</a>"+"</td>");
-  //  $("#citas").append("<td> "+ "<a class='link_edit btn btn-primary' href = recetaMedica.php?idCita="+ObjetoJSON[i].id+">Receta Medica</a>"+"</td>");
-  $("#citas").append("<td> "+ "<a class='link_edit btn btn-primary' href = farmacia.php?idCita="+ObjetoJSON[i].id+">Receta Medica</a>"+"</td>");
-    $("#citas").append("</tr>");
-}
 
 $("#table").append("</table>");
 

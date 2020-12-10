@@ -25,9 +25,6 @@
 
 <body>
 
-  
-    
-
 
   <div  class="navbar navbar-inverse ">
     <a class="navbar-brand" runat="server" href="index.php">CLINICA ALPHA</a>
@@ -52,10 +49,6 @@
     </div>
 
  
-  
-    
-
-   
  
 </body>
  
