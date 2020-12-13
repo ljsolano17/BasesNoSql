@@ -218,7 +218,29 @@ function InsertarCita($pnombrePaciente,$pcedula,$pcorreo,$pidDoctor,$pidSala,$pf
  try{
    $collection=Conectar("paciente");
            
-   $document = array( 
+
+   if(validarFechaCita($pfecha,$phora,$pidDoctor)){
+    $document = array( 
+      
+      "nombre" => $pnombrePaciente, 
+      "cedula" => $pcedula, 
+      "correo" => $pcorreo,
+      "idDoctor" => $pidDoctor,
+      "idSala" => $pidSala,
+      "fecha" => $pfecha,
+      "hora" => $phora,
+      "descripcion" => $pdescripcion,
+      "Estado"=>"Pendiente",
+      "id"=>getPacienteCount()
+   );
+    
+    $collection->insertOne($document);
+  
+    $response = "El paciente ha sido agregado satisfactoriamente";
+   }else{
+    $response = "El doctor tiene una cita asignada para ese dia";
+   }
+   /*$document = array( 
       
     "nombre" => $pnombrePaciente, 
     "cedula" => $pcedula, 
@@ -234,7 +256,7 @@ function InsertarCita($pnombrePaciente,$pcedula,$pcorreo,$pidDoctor,$pidSala,$pf
   
   $collection->insertOne($document);
 
-  $response = "El paciente ha sido agregado satisfactoriamente";
+  $response = "El paciente ha sido agregado satisfactoriamente";*/
 
   return $response;
 
@@ -245,18 +267,16 @@ function InsertarCita($pnombrePaciente,$pcedula,$pcorreo,$pidDoctor,$pidSala,$pf
   }
 }
 
-function insertarFactura($idPaciente,$idMedicamento,$user,$cantidad){
+function insertarFactura($idPaciente){
 try{
-$collection=Conectar("factura");
+$collection=Conectar("reporteFactura");
      
 $document = array( 
 
 "idPaciente" => $idPaciente, 
-"idMedicamento" => $idMedicamento, 
-"usuario" => $user,
-"cantidad" => $cantidad,
-"precioConsulta" => 50000,
-"id"=>getFacturaCount()
+"fechaFactura"=>"new Date()",
+"idFactura"=>getFacturaCount()
+
 );
 
 $collection->insertOne($document);
@@ -355,7 +375,7 @@ function getFacturaCount(){
 
 try{
    
-  $collection = Conectar("factura");
+  $collection = Conectar("reporteFactura");
   
 
   $cursor = $collection->find();
@@ -688,7 +708,7 @@ function guardarExceptions($exception){
   $collection=Conectar("excepciones");
           //print(getPacienteCount());
   $document = array( 
-   "excepcion" => $exception,
+   "descripcion" => $exception,
    "fecha" => 'new Date()'
 
 );
@@ -696,3 +716,31 @@ function guardarExceptions($exception){
 $collection->insertOne($document);
 
 }
+
+function validarFechaCita($pfecha,$phora,$pidDoctor){
+
+
+  try{
+    $collection = Conectar("paciente");
+   
+    $cursor = $collection->find(['fecha' => $pfecha,'hora'=>$phora,'idDoctor'=>$pidDoctor,'Estado'=>"Pendiente"]);
+    $rawdata=array();
+    $i=0;
+    foreach ($cursor as $receta) {
+      $myJSON = $receta;
+      $rawdata[$i]=$myJSON;
+      $i++;
+     };
+     if(count($rawdata)>0){
+      return false;
+     }else{
+       return true;
+     }
+
+     
+  }catch(Exception $e){
+    guardarExceptions($e);
+  }
+
+}
+

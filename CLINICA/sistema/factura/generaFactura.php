@@ -47,7 +47,7 @@
 			$today = date('d-m-Y');
 			$_SESSION['FechaGenerarFactura']=$today;
 			
-			
+			insertarFactura($codCliente);
 
            cambiarEstadoPaciente($codCliente);
 
