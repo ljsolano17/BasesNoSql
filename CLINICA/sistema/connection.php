@@ -3,11 +3,19 @@ require 'vendor/autoload.php';
 
 
 function Conectar($coleccion){
+  try{
     $collection = (new MongoDB\Client)->clinica->$coleccion;
     return $collection;
+
+  }catch(Exception $e){
+
+    guardarExceptions($e);
+  
+  }
 }
 
 function encontrarDoctor($id){
+  try{
   $collection = Conectar("doctores");
   $cursor=$collection->find(['_id' => $id]);
   $rawdata=array();
@@ -20,8 +28,21 @@ function encontrarDoctor($id){
     $i++;
    };
    return $rawdata;
+
+  }catch(Exception $e){
+
+    guardarExceptions($e);
+  
+  }
+
 }
+
+
+
 function findData($accion,$coleccion,$pid){
+  try{
+
+
 
 if($coleccion=="paciente" && $accion==-1){
 
@@ -64,18 +85,13 @@ return [];
     }
   }
 }
-   
-     
-    /////////////////////////////////////////////////////////////////////////
-   // $cursor=([{$lookup:{from:$doctores,localField:$coleccion,foreignField:"_id",as:"idDoctor"}}])
-   return $rawdata;
+
+ return $rawdata;
 
 }else if($coleccion=="paciente" && $accion==1){
     $collection = Conectar($coleccion);
-//db.paciente.aggregate([{$match:{id:3}},
-//{$lookup:{from:"doctores",localField:"idDoctor",foreignField:"_id",as:"idDoctor"}}]).pretty()
-$id=(int)$pid;   
-$cursor = $collection->aggregate([['$match'=>["id"=>$id]],
+    $id=(int)$pid;   
+    $cursor = $collection->aggregate([['$match'=>["id"=>$id]],
       ['$lookup'=>[
         "from"=>"doctores",
         "localField"=>"idDoctor",
@@ -91,37 +107,7 @@ $cursor = $collection->aggregate([['$match'=>["id"=>$id]],
        $i++;
       };
        return $rawdata;
-    /*$doctores=Conectar("doctores");
-    $id=(int)$pid;
-    $cursor=$collection->find(['id' => $id]);
-    $cursor2 = $doctores->find();
-    $rawdata=null;
-    $i = 0;
-    foreach ($cursor as $pacientes) {
-        $myJSON = $pacientes;
-        
-        $rawdata=$myJSON;
-        $i++;
-       };
-       foreach ($cursor2 as $doctores) {
-      
-        $myJSON = $doctores['NOMBRE'];
-        
-        $rawdata2[$i]=$myJSON;
-        $i++;
-       };
-      
 
-        if($rawdata['idDoctor']==1){
-          $rawdata['idDoctor']=encontrarDoctor((int)$rawdata['idDoctor']);
-        }else if($rawdata['idDoctor']==2){
-          $rawdata['idDoctor']=encontrarDoctor((int)$rawdata['idDoctor']);
-        }else if($rawdata['idDoctor']==3){
-          $rawdata['idDoctor']=encontrarDoctor((int)$rawdata['idDoctor']);
-        }
-     
-    return $rawdata;
-*/
 }else if($coleccion=="doctores"){
     $collection = Conectar($coleccion);
     $cursor = $collection->find();
@@ -158,6 +144,7 @@ $cursor = $collection->aggregate([['$match'=>["id"=>$id]],
      $i++;
     };
   return $rawdata;
+
 }else if($coleccion=="sala" && $accion==1){
   $collection = Conectar($coleccion);
   $cursor = $collection->find();
@@ -169,10 +156,11 @@ $cursor = $collection->aggregate([['$match'=>["id"=>$id]],
    $i++;
   };
 return $rawdata;
+
 }else if($coleccion=="sala" && $accion==0){
   $collection = Conectar($coleccion);
-  $id=(int)$pid;
-  $cursor = $collection->find(['idSala' => $id]);
+  $id=$pid;
+  $cursor = $collection->find(['_id_sala' => $id]);
   $rawdata=array();
   $i = 0;
   foreach ($cursor as $salas) {
@@ -216,37 +204,18 @@ return $rawdata;
     $i++;
    };
  
-/*
-if(count($rawdata)<=0){
-  return [];
-  }else{
-    for($x=0;$x<count($rawdata);$x++){
-      
-      if($rawdata[$x]['receta']['c1']['id']==1){
-
-  $rawdata[$x]['receta']['c1']['id']= $rawdata2[1]  ;
-
-      }else if($rawdata[$x]['receta']['c2']['id']==2){
-
-  $rawdata[$x]['receta']['c2']['id']= $rawdata2[2]  ;
-
-      }else if($rawdata[$x]['receta']['c3']['id']==3){
-
- $rawdata[$x]['receta']['c3']['id']= $rawdata2[3]  ;
-
-      }
-   
-    }
-  }*/
-
 
 return $rawdata;
 }
+}catch(Exception $e){
+
+  guardarExceptions($e);
 
 }
+}
 
-    function InsertarCita($pnombrePaciente,$pcedula,$pcorreo,$pidDoctor,$pidSala,$pfecha,$phora,$pdescripcion){
-
+function InsertarCita($pnombrePaciente,$pcedula,$pcorreo,$pidDoctor,$pidSala,$pfecha,$phora,$pdescripcion){
+ try{
    $collection=Conectar("paciente");
            
    $document = array( 
@@ -263,17 +232,21 @@ return $rawdata;
     "id"=>getPacienteCount()
  );
   
- $collection->insertOne($document);
+  $collection->insertOne($document);
 
-            $response = "El paciente ha sido agregado satisfactoriamente";
+  $response = "El paciente ha sido agregado satisfactoriamente";
 
-            return $response;
+  return $response;
 
+  }catch(Exception $e){
 
-    }
+    guardarExceptions($e);
+        
+  }
+}
 
 function insertarFactura($idPaciente,$idMedicamento,$user,$cantidad){
-
+try{
 $collection=Conectar("factura");
      
 $document = array( 
@@ -293,10 +266,15 @@ $collection->insertOne($document);
      
       return $response;
 
+    }catch(Exception $e){
 
+      guardarExceptions($e);
+  
+    }
 }
 
 function insertarReceta($idPaciente,$idMedicamento1,$cantidad,$comentario){
+  try{
   $collection=Conectar("medicinas");
   $cursor=$collection->find(['idPaciente' => (int)$idPaciente]);
   $cursor2=$collection->find(['receta.idProducto' => (int)$idMedicamento1]);
@@ -314,35 +292,7 @@ function insertarReceta($idPaciente,$idMedicamento1,$cantidad,$comentario){
     $i++;
    };
   if(count($rawdata)>0){
-    //lo que quiero hacer es que si un producto ya esta en los ids o sea que si el idProducto 1 ya esta hacer un update a la cantidad por la nueva
-//print_r($rawdata);
-//if(count($rawdata2)>0){
- // print($idMedicamento1);
-  
- /* for($i=0;count($rawdata2[1]['receta']);$i++){
-
-    if($idMedicamento1==$rawdata2[1]['receta'][0]['cantidad'][0]['cantidad']){
-$a=$i;
-}
-  }*/
- // $a=$rawdata2[0]['receta'][0]['cantidad'][0]['cantidad'];
- // $a=0;
- // print(count($rawdata2[1]['receta']));
-/*if(/*$rawdata2[1]['receta'][0]['idProducto']*//*1==1){
-//echo ("...ddd.dd.d.d.d.d");
-}*/
- /* $a=0;
- $collection->updateOne(array('idPaciente'=>(int)$idPaciente), array('$inc' => array('receta.'.$a.'.cantidad'=>(int)$cantidad)));
- */
- /*$collection->updateOne( 
-  [ 'idPaciente' =>(int)$idPaciente ],
-  [ '$push' => [ 
-    'receta' => array(
-      'prueba'=>$a
-      )
-  ]
-  ]);*//*
-}else{*/
+   
     $updateResult=$collection->updateOne( 
       [ 'idPaciente' =>(int)$idPaciente ],
       [ '$push' => [ 
@@ -351,7 +301,7 @@ $a=$i;
           )
       ]
       ]);
-      //  }
+     
   }else {
   
 
@@ -364,10 +314,18 @@ $a=$i;
       $collection->insertOne($document);
 
     }
+
+
+  }catch(Exception $e){
+
+    guardarExceptions($e);
+
+  }
   }
       
+function getMedicinasCount(){
+ try{
 
-  function getMedicinasCount(){
     
    
     $collection = Conectar("medicinas");
@@ -384,11 +342,18 @@ $a=$i;
     };
    
   return count($rawdata)+1;
-  //
-  }  
+
+}catch(Exception $e){
+
+  guardarExceptions($e);
+
+  }
+
+}  
 
 function getFacturaCount(){
-    
+
+try{
    
   $collection = Conectar("factura");
   
@@ -405,10 +370,16 @@ function getFacturaCount(){
  
 return count($rawdata)+1;
 
-}   
-    function getPacienteCount(){
+}catch(Exception $e){
+
+  guardarExceptions($e);
+
+}
+}  
+
+function getPacienteCount(){
     
-   
+   try{
         $collection = Conectar("paciente");
         
     
@@ -423,12 +394,17 @@ return count($rawdata)+1;
         };
        
       return count($rawdata)+1;
-    //
-    }
 
-    function getPacienteCantidad(){
+    }catch(Exception $e){
+
+      guardarExceptions($e);
+  
+    }
+  }
+
+function getPacienteCantidad(){
     
-   
+   try{
       $collection = Conectar("paciente");
      
   
@@ -437,18 +413,21 @@ return count($rawdata)+1;
       $i = 0;
       foreach ($cursor as $pacientes) {
        $myJSON = $pacientes;
-       //  echo($myJSON);
        $rawdata[$i]=$myJSON;
        $i++;
       };
-     
     return count($rawdata);
-  //
+
+  }catch(Exception $e){
+
+    guardarExceptions($e);
+
   }
+}
    
 
 function EliminaPaciente($pidCita){
-
+try{
 $collection = (new MongoDB\Client)->clinica->paciente;
 $collection2 = (new MongoDB\Client)->clinica->medicinas;
 $idCita=(int)$pidCita;
@@ -457,28 +436,34 @@ $collection2->deleteOne(['idPaciente' =>$idCita ]);
 $response = "El paciente ha sido eliminado del sistema satisfactoriamente";
 return $response;
 
+}catch(Exception $e){
+
+  guardarExceptions($e);
+
+}
 }
 
 
 function EliminaUsuario($pidUser){
-
+try{
   $collection =Conectar("users"); ;
   $idUser=(int)$pidUser;
   $collection->deleteOne(['idusuario' =>$idUser ]);
   $response = "El paciente ha sido eliminado del sistema satisfactoriamente";
   return $response;
-  
+}catch(Exception $e){
+
+  guardarExceptions($e);
+
+}                      
   }
 
 
 
 
-function actualizaDatos($pidCita,
-$pnombrePaciente,$pcedula,$pcorreo,
-$pidDoctor,$pfecha,$phora,$pdescripcion){
-      print("id".$pidCita." nombre".
-      $pnombrePaciente." cedula".$pcedula." correo".$pcorreo." iddoctor".
-      $pidDoctor." fecha".$pfecha." hora".$phora." descrip".$pdescripcion);
+function actualizaDatos($pidCita,$pnombrePaciente,$pcedula,$pcorreo,$pidDoctor,$pfecha,$phora,$pdescripcion){
+  try{
+  
     $response = "";
   
     
@@ -498,41 +483,44 @@ $pidDoctor,$pfecha,$phora,$pdescripcion){
     'id'=>(int)$pidCita
     ]
     ]);
-    /*
-printf("Matched %d document(s)\n", $updateResult->getMatchedCount());
-printf("Modified %d document(s)\n", $updateResult->getModifiedCount());*/
-    $response = "El paciente ha sido actualizado satisfactoriamente";
-    
 
+    $response = "El paciente ha sido actualizado satisfactoriamente";
     return $response;
 
+  }catch(Exception $e){
+
+    guardarExceptions($e);
+
+ }
 }
 
 function insertUsers($nombre,$correo,$usuario,$contrasena){
-
+try{
   
            
    $collection=Conectar("users");
-           //print(getPacienteCount());
-   $document = array( 
+  $document = array( 
     "user" => $usuario,
     "password" => $contrasena,
     "idusuario"=>getTotalUsers(-1),
     "email" => $correo,
     "nombre" => $nombre
 
- );
+  );
   
  $collection->insertOne($document);
 
-            $response = true;
+  $response = true;      
+  return $response;
 
-           
-            return $response;
 
+  }catch(Exception $e){
+    guardarExceptions($e);
+  }
 }
 
 function getTotalUsers($accion){
+  try{
   $collection = Conectar("users");
   $cursor = $collection->find();
       $rawdata=array();
@@ -548,155 +536,163 @@ function getTotalUsers($accion){
      }else{
       return $rawdata;
      }
-    //return count($rawdata)+1;
+    }catch(Exception $e){
+      guardarExceptions($e);
+   }
 }
 
 function getUserExist($user,$pass,$count){
     
-   
+  try{
+
+ 
   $collection = Conectar("users");
   
-  
- $cursor = $collection->findOne(['user' => $user,'password'=>$pass]);
+  $cursor = $collection->findOne(['user' => $user,'password'=>$pass]);
+
  if($cursor==null){
-return 0;
+
+   return 0;
+
  }else{
+
   $rawdata=array();
   $i = 0;
-  foreach ($cursor as $pacientes) {
+  foreach ($cursor as $pacientes) 
+   {
    $myJSON = $pacientes;
-   //  echo($myJSON);
-   $rawdata[$i]=$myJSON;
-   $i++;
-  };
- }
- if($count==1){
-  return count($rawdata);
-
- }
   
+     $rawdata[$i]=$myJSON;
+     $i++;
+    };
+  }
+   if($count==1)
+  {
+     return count($rawdata);
 
-//
+  }
+  
+}catch(Exception $e){
+  guardarExceptions($e);
+}
+
 }
 
 
 
 function LookUp ($accion,$id){
- 
+ try{
  if($accion==1){
-  $collection = Conectar("medicinas");
-  //$farmacia = Conectar("farmacia");
-  //$cursor = $collection->find();
-  /*$cursor = $collection->aggregate([
-['$lookup'=>[
-  "from"=>"farmacia",
-  "localField"=>"receta.idProducto",
-  "foreignField"=>"id",
-  "as"=>"datos"
-]]
-]);*/
+   $collection = Conectar("medicinas");
+ 
+   $cursor = $collection->aggregate([['$match'=>["idPaciente"=>(int)$id]],
+    ['$lookup'=>[
+      "from"=>"farmacia",
+      "localField"=>"receta.idProducto",
+      "foreignField"=>"id",
+      "as"=>"datos"
+    ]]
+   ]);
 
-$cursor = $collection->aggregate([['$match'=>["idPaciente"=>(int)$id]],
-['$lookup'=>[
-  "from"=>"farmacia",
-  "localField"=>"receta.idProducto",
-  "foreignField"=>"id",
-  "as"=>"datos"
-]]
-    ]);
-
-$rawdata=array();
-$i = 0;
-foreach ($cursor as $medicinas) {
- $myJSON = $medicinas;
- $rawdata[$i]=$myJSON;
- $i++;
-};
+     $rawdata=array();
+     $i = 0;
+  foreach ($cursor as $medicinas) 
+  {
+     $myJSON = $medicinas;
+     $rawdata[$i]=$myJSON;
+     $i++;
+  };
  return $rawdata;
 
  }else if($accion==2){
-$collection=Conectar("paciente");
-//$collection=Conectar("medicinas");
-//db.paciente.aggregate([{$lookup:{from:"doctores",localField:"idDoctor",foreignField:"_id",as:"idDoctor"}}])
-$cursor = $collection->aggregate([
-  ['$lookup'=>[
+ $collection=Conectar("paciente");
+
+ $cursor = $collection->aggregate([
+   ['$lookup'=>[
     "from"=>"doctores",
     "localField"=>"idDoctor",
     "foreignField"=>"_id",
     "as"=>"idDoctor"
-  ]]
+   ]]
   ]);
 
-/*
-  $cursor = $collection->aggregate([['$match'=>["id"=>(int)$id]],
-  ['$lookup'=>[
-    "from"=>"doctores",
-    "localField"=>"idDoctor",
-    "foreignField"=>"_id",
-    "as"=>"idDoctor"
-  ]]
-      ]);*/
-  
 
-
-
-
-  $rawdata=array();
-  $i = 0;
+     $rawdata=array();
+     $i = 0;
 
  
-  foreach ($cursor as $medicinas) {
-   $myJSON = $medicinas;
-   $rawdata[$i]=$myJSON;
-   $i++;
-  };
-   return $rawdata;
+   foreach ($cursor as $medicinas) {
+     $myJSON = $medicinas;
+     $rawdata[$i]=$myJSON;
+     $i++;
+   };
+     return $rawdata;
   
- }
+  }
 
-  
-  //$cursor_farmacia = $farmacia->find();
-
-
+}catch(Exception $e){
+  guardarExceptions($e);
+}
 
 }
 
 function insertFactura($nombre,$correo,$usuario,$contrasena){
 
-  
-           
-  $collection=Conectar("users");
-          //print(getPacienteCount());
-  $document = array( 
-   "user" => $usuario,
-   "password" => $contrasena,
-   "idusuario"=>getTotalUsers(-1),
-   "email" => $correo,
-   "nombre" => $nombre
-
-);
- 
-$collection->insertOne($document);
-
-           $response = true;
-
+  try{
+      
+    $collection=Conectar("users");
           
-           return $response;
+    $document = array( 
+    "user" => $usuario,
+    "password" => $contrasena,
+    "idusuario"=>getTotalUsers(-1),
+    "email" => $correo,
+    "nombre" => $nombre
 
+     );
+ 
+    $collection->insertOne($document);
+
+    $response = true;   
+    return $response;
+
+
+  }catch(Exception $e){
+     guardarExceptions($e);
+  }
 }
 
 
 
 
 function cambiarEstadoPaciente($pidPaciente){
+ /* try{
+
+ 
   $idPaciente=(int)$pidPaciente;
   $collection = Conectar("paciente");
 
   $updateResult=$collection->updateOne( 
   [ 'id' =>(int) $idPaciente ],
   [ '$set' => [ 
-  'Estado' => "Atendido"
+  'Estado' => "Facturado"
   ]
   ]);
+}catch(Exception $e){
+
+  guardarExceptions($e);
+  
+}*/
+}
+function guardarExceptions($exception){
+  $collection=Conectar("excepciones");
+          //print(getPacienteCount());
+  $document = array( 
+   "excepcion" => $exception,
+   "fecha" => 'new Date()'
+
+);
+ 
+$collection->insertOne($document);
 
 }

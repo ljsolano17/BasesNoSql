@@ -109,13 +109,15 @@
 			Hora de la cita:<br>
 			<?php 
 				echo $_SESSION['HoraCita'];
-			?> h
+			?> 
 		   <br><br>
 			</div>
 			<div  class="col-xl-4">
 			Sala:<br>
 			<?php 
-				echo $_SESSION['Sala'];
+			echo $idSala;
+			//	print_r($idSala);
+			//	print_r($salas);
 			?>
 			<br><br>
 			</div>
@@ -124,7 +126,39 @@
 
 </div>
 		</td>
+		<td>
+		
+		<div class="row">
+
+<span >DATOS DE LA SALA</span><br><br>
+			<div  class="col-xl-4">
+			Nombre de la Sala:<br>
+			<?php 
+				echo $salas[0]['nombre_sala'];
+			?>
+		   <br><br>
+			</div>
+			<div  class="col-xl-4">
+			Tipo de Sala:<br>
+			<?php 
+				echo $salas[0]['tipo_sala'][0]['nombre_tipo_sala'];
+			?> 
+		   <br><br>
+			</div>
+			<div  class="col-xl-4">
+			Sede:<br>
+			<?php 
+			echo $salas[0]['sede'][0]['nombre_sede'].", ". $salas[0]['sede'][0]['direccion'];
+			//	print_r($idSala);
+			//	print_r($salas);
+			?>
+			<br><br>
+			</div>
+
 			
+
+</div>
+		</td>
 			
 		</tr>
 		
@@ -145,14 +179,6 @@
 			</thead>
 			<tbody >
 
-			<?php
-			if(count($infoProductos)==0){
-			?>	<tr>
-			
-				<td><?php print("Consulta Medica: 35000")?></td>
-				
-			</tr>
-			<?php } ?>
 			<?php
               for($i=0;$i<count($infoProductos);$i++){
 
@@ -179,18 +205,25 @@
 					}
      	}
 				
-//print_r($infoReceta);
+
 			?>
 			</tbody>
 			<tfoot>
+			<tr>
+					
+					<td><span>Precio de consulta </span></td>
+					<td><span>35000</span></td>
+					
+			</tr>
 				<tr>
 					<td><span>TOTAL</span></td>
-					<td><span><?php echo $total+35000// echo $_SESSION['PrecioCita']*$_SESSION['PrecioMedicamentos']; ?></span></td>
+					
+					<td><span><?php echo $total+35000 ?></span></td>
 				</tr>
 		</tfoot>
 	</table>
 	<div>
-		<p>Si usted tiene preguntas sobre esta factura, <br>pongase en contacto con nombre, teléfono y Email</p>
+		<p>Si usted tiene preguntas sobre esta factura, <br>pongase en contacto con nombre, teléfono y Correo Electrónico</p>
 		<h4>¡Gracias!</h4>
 	</div>
 

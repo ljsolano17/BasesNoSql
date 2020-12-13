@@ -60,9 +60,9 @@
 			
 			 $cant = getPacienteCantidad();
 			 $query = findData(-1,"paciente",0);
-			 $query2 = findData(-1,"medicinas",null);
-			//precios en query3
-			 $query3 = findData(-1,"farmacia",null);
+			// $query2 = findData(-1,"medicinas",null);
+			
+		//	 $query3 = findData(-1,"farmacia",null);
 			 
 
 			//$_SESSION['PRECIOS']=1;
@@ -80,21 +80,10 @@
 			
 			
 			if($cant > 0){
-//$query2[$i]['receta'][$i]['cantidad']
-				//$data=$query;
+
 				$cant--;
 				for($i=0;$i<=$cant;$i++){
-				//	for($z=0;$z<count($query2);$z++){
-//if($query[$i]['id']==$query2[$z]['idPaciente']){
-//	if($query2[$i]['receta'][$i]['idProducto']==$query[$i]['id']){
-		//for($x=0;$x<count($query2[$i]['receta']);$x++){
-		//	$_SESSION['PRECIOS']=$query2[$i]['receta'][$i]['cantidad']*$query3[$i]['precio'];
-	//	}
-	//	$_SESSION['PRECIOS']=$query2[$i]['receta'][$i]['cantidad']*$query3[$i]['precio'];
-
-//	}
-//$_SESSION['PRECIOS']=$query2[$i]['receta'][$i]['cantidad']*$query
-//}
+		if($query[$i]['Estado']=="Pendiente"){
 				
 			?>
 				<tr >
@@ -105,6 +94,7 @@
 					
 					<td><?php echo $_SESSION['nombre']; ?></td>
 					
+					
 					<td>	
 						<a class="btn btn-danger" href="factura/generaFactura.php?cl=<?php echo $query[$i]['id'];?>&f=<?php echo $query[$i]['id']; ?>">Imprimir
                         </a>
@@ -112,7 +102,7 @@
 				</tr>
 			
 		<?php 
-			//	}
+				}
 				}
 
 			}
